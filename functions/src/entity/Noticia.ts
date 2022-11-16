@@ -1,26 +1,37 @@
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, BeforeInsert, OneToOne} from "typeorm";
-import { Usuario } from "./Usuario";
-import { Colonia } from "./Colonia";
+import { BaseEntity, Entity, Column, PrimaryGeneratedColumn} from "typeorm";
+//import { Usuario } from "./Usuario";
+//import { Colonia } from "./Colonia";
 @Entity()
 export class Noticia extends BaseEntity {
     
     @PrimaryGeneratedColumn()
-    id: number;
+    Id: number;
+
+    @Column()
+    nombre: string;
+
+    @Column()
+    apellido: string;
 
     @Column()
     descripcion: string;
-    
+
     @Column()
-    createdAt: Date;
+    correo: string;
 
-    @BeforeInsert()
-    addTimestamp() {
-        this.createdAt = new Date();
-    }
+    @Column()
+    direccion: string;
 
-    @OneToOne(type => Usuario)
-    usuario: Usuario;
+    @Column()
+    colonia: string;
 
-    @OneToOne(type => Colonia)
-    colonia: Colonia;
+    @Column()
+    codigoPostal: string;
+
+    @Column()
+    tipoUsuario: string;
+
+    @Column()
+    fecha: string;
+
 }

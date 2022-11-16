@@ -4,7 +4,7 @@ import * as functions from "firebase-functions";
 import { MysqlDataSource } from "./config";
 import { Usuario } from "./entity/Usuario";
 import { Colonia } from "./entity/Colonia";
-import { Reporte } from "./entity/Reporte";
+import { Queja } from "./entity/Queja";
 import { Noticia } from "./entity/Noticia";
 
 
@@ -53,11 +53,11 @@ export const getColonias = functions.https.onRequest(async (request, response) =
     });
 });
 
-export const getReportes = functions.https.onRequest(async (request, response) => {
+export const getQuejas = functions.https.onRequest(async (request, response) => {
 
     MysqlDataSource.initialize().then(async () => {
     
-        const reportesRepo = MysqlDataSource.getRepository(Reporte)
+        const reportesRepo = MysqlDataSource.getRepository(Queja)
 
         const allReportes = await reportesRepo.find();
     
@@ -150,20 +150,21 @@ export const createColonia = functions.https.onRequest(async (request, response)
     });
 });
 
-export const createReporte = functions.https.onRequest(async (request, response) => {
+export const createQueja = functions.https.onRequest(async (request, response) => {
 
     MysqlDataSource.initialize().then(async () => {
 
-        const { descripcion, naturaleza , usuarioId, coloniaId  } = request.body;
+        const { naturaleza, descripcion, correo, fecha, tipoUsuario  } = request.body;
 
         try{
-            const reporteRepo = MysqlDataSource.getRepository(Reporte);
+            const reporteRepo = MysqlDataSource.getRepository(Queja);
 
             const newReporte = reporteRepo.create({
-                descripcion,
                 naturaleza,
-                usuario: usuarioId,
-                colonia: coloniaId
+                descripcion,
+                correo,
+                fecha,
+                tipoUsuario
             });
 
             
@@ -186,15 +187,21 @@ export const createNoticia = functions.https.onRequest(async (request, response)
 
     MysqlDataSource.initialize().then(async () => {
 
-        const { descripcion, usuarioId, coloniaId  } = request.body;
+        const { nombre, apellido, descripcion, correo, direccion, colonia, codigoPostal, tipoUsuario, fecha} = request.body;
 
         try{
             const noticiaRepo = MysqlDataSource.getRepository(Noticia);
 
             const newNoticia = noticiaRepo.create({
+                nombre,
+                apellido,
                 descripcion,
-                usuario: usuarioId,
-                colonia: coloniaId
+                correo,
+                direccion,
+                colonia,
+                codigoPostal,
+                tipoUsuario,
+                fecha
             });
 
             const savedNoticia = await noticiaRepo.save(newNoticia);
