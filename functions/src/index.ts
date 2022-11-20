@@ -219,6 +219,128 @@ export const createNoticia = functions.https.onRequest(async (request, response)
 
 });
 
+export const updateQueja = functions.https.onRequest(async (request, response) => {
+    
+    MysqlDataSource.initialize().then(async () => {
+    
+        const { id, naturaleza, descripcion, correo, fecha, tipoUsuario } = request.body;
+        
+        try{
+
+            const reporteRepo = MysqlDataSource.getRepository(Queja);
+            await reporteRepo.update(Number(id), {
+                naturaleza,
+                descripcion,
+                correo,
+                fecha,
+                tipoUsuario
+            });
+
+            
+            const updatedReporte = await reporteRepo.find({ 
+                where: { Id: Number(id) }
+             });
+
+            response.send(updatedReporte);
+        } 
+        
+        catch(err) {
+            console.log(err);
+        }
+
+
+
+    }).catch((err) => {
+        console.log(err)
+    }).then(() => {
+        MysqlDataSource.destroy();
+    });
+});
+
+export const updateNoticia = functions.https.onRequest(async (request, response) => {
+    
+    MysqlDataSource.initialize().then(async () => {
+    
+        const { id, nombre, apellido, descripcion, correo, direccion, colonia, codigoPostal, tipoUsuario, fecha } = request.body;
+        
+        try{
+
+            const noticiaRepo = MysqlDataSource.getRepository(Noticia);
+            await noticiaRepo.update(Number(id), {
+                nombre,
+                apellido,
+                descripcion,
+                correo,
+                direccion,
+                colonia,
+                codigoPostal,
+                tipoUsuario,
+                fecha
+            });
+
+            
+            const updatedNoticia = await noticiaRepo.find({ 
+                where: { Id: Number(id) }
+             });
+
+            response.send(updatedNoticia);
+        } 
+        
+        catch(err) {
+            console.log(err);
+        }
+
+
+    }).catch((err) => {
+        console.log(err)
+    }).then(() => {
+        MysqlDataSource.destroy();
+    });
+});
+
+export const deleteQueja = functions.https.onRequest(async (request, response) => {
+
+    MysqlDataSource.initialize().then(async () => {
+        
+        const { id } = request.body;
+        const reporteRepo = MysqlDataSource.getRepository(Queja);
+
+        const reportToDelete = await reporteRepo.findOne({
+            where: { Id: Number(id) }
+        });
+
+        await reporteRepo.remove(reportToDelete);
+
+        response.send(`Reporte con id ${id} eliminado`);
+    }).catch((err) => {
+        console.log(err)
+    }).then(() => {
+        MysqlDataSource.destroy();
+    });
+});
+
+export const deleteNoticia = functions.https.onRequest(async (request, response) => {
+
+    MysqlDataSource.initialize().then(async () => {
+
+        const { id } = request.body;
+        const noticiaRepo = MysqlDataSource.getRepository(Noticia);
+
+        const noticiaToDelete = await noticiaRepo.findOne({
+            where: { Id: Number(id) }
+        });
+
+        await noticiaRepo.remove(noticiaToDelete);
+
+        response.send(`Noticia con id ${id} eliminada`);
+    }).catch((err) => {
+        console.log(err)
+    }).then(() => {
+        MysqlDataSource.destroy();
+    });
+});
+
+
 
 
 // // Start writing Firebase Functions
